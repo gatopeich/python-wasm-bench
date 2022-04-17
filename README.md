@@ -3,13 +3,14 @@
 Roadmap:
 
 1. Compare CPython performance inside Wasm with the native version
+   * RESULT: Wasmer Python 3.6 package is 3~4 times slower than Docker equivalent
 
 2. Find obvious bottlenecks with perf profiler.
-..+ In particular: how is the super-optimized "dict" implementation working there?
+   * In particular: how is the super-optimized "dict" implementation working there?
 
 3. See if we can help it with native implementations via WASI
-..+ Would it help providing native/JS support for dict?
-..+ How hard is this?
+   * Would it help providing native/JS support for dict?
+   * How hard is this?
 
 
 # Tests
