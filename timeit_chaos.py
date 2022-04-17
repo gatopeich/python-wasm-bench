@@ -1,12 +1,16 @@
 """create chaosgame-like fractals
 
 Copyright (C) 2005 Carl Friedrich Bolz
+
+Adapted by gatopeich to benchmark Python performance under Wasm, by using timeit instead of pyperf
 """
 
 import math
 import random
+import sys
+import timeit
 
-import pyperf
+import argparse
 
 
 DEFAULT_THICKNESS = 0.25
@@ -235,7 +239,7 @@ class Chaosgame(object):
             write_ppm(im, filename)
 
 
-def main(runner, args):
+def main(args):
     splines = [
         Spline([
             GVector(1.597350, 3.304460, 0.000000),
@@ -260,50 +264,36 @@ def main(runner, args):
             3, [0, 0, 0, 1, 1, 1])
     ]
 
-    runner.metadata['chaos_thickness'] = args.thickness
-    runner.metadata['chaos_width'] = args.width
-    runner.metadata['chaos_height'] = args.height
-    runner.metadata['chaos_iterations'] = args.iterations
-    runner.metadata['chaos_rng_seed'] = args.rng_seed
-
     chaos = Chaosgame(splines, args.thickness)
-    runner.bench_func('chaos', chaos.create_image_chaos,
-                      args.width, args.height, args.iterations,
-                      args.filename, args.rng_seed)
-
-
-def add_cmdline_args(cmd, args):
-    cmd.append("--width=%s" % args.width)
-    cmd.append("--height=%s" % args.height)
-    cmd.append("--thickness=%s" % args.thickness)
-    cmd.append("--rng-seed=%s" % args.rng_seed)
-    if args.filename:
-        cmd.extend(("--filename", args.filename))
+    stmt = f'chaos.create_image_chaos({args.width}, {args.height}, {args.iterations}, {args.filename}, {args.rng_seed})'
+    print("Python version:", sys.version)
+    print("Running 3 times, 10X", stmt)
+    results = timeit.repeat(stmt, number=10, repeat=3, globals=locals())
+    print("Results:", sorted(results))
 
 
 if __name__ == "__main__":
-    runner = pyperf.Runner(add_cmdline_args=add_cmdline_args)
-    runner.metadata['description'] = "Create chaosgame-like fractals"
-    cmd = runner.argparser
-    cmd.add_argument("--thickness",
+    parser = argparse.ArgumentParser()
+    parser.description = "Create chaosgame-like fractals"
+    parser.add_argument("--thickness",
                      type=float, default=DEFAULT_THICKNESS,
                      help="Thickness (default: %s)" % DEFAULT_THICKNESS)
-    cmd.add_argument("--width",
+    parser.add_argument("--width",
                      type=int, default=DEFAULT_WIDTH,
                      help="Image width (default: %s)" % DEFAULT_WIDTH)
-    cmd.add_argument("--height",
+    parser.add_argument("--height",
                      type=int, default=DEFAULT_HEIGHT,
                      help="Image height (default: %s)" % DEFAULT_HEIGHT)
-    cmd.add_argument("--iterations",
+    parser.add_argument("--iterations",
                      type=int, default=DEFAULT_ITERATIONS,
                      help="Number of iterations (default: %s)"
                           % DEFAULT_ITERATIONS)
-    cmd.add_argument("--filename", metavar="FILENAME.PPM",
+    parser.add_argument("--filename", metavar="FILENAME.PPM",
                      help="Output filename of the PPM picture")
-    cmd.add_argument("--rng-seed",
+    parser.add_argument("--rng-seed",
                      type=int, default=DEFAULT_RNG_SEED,
                      help="Random number generator seed (default: %s)"
                           % DEFAULT_RNG_SEED)
 
-    args = runner.parse_args()
-    main(runner, args)
+    args = parser.parse_args()
+    main(args)
