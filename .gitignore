@@ -1,3 +1,7 @@
 venv
 .vscode
 wapm_packages
+*.deb
+*.tar.gz
+*.tar.bz2
+node_modules
