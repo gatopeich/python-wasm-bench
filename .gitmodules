@@ -1,0 +1,18 @@
+[submodule "python-cmake-buildsystem"]
+	path = python-cmake-buildsystem
+	url = https://github.com/python-cmake-buildsystem/python-cmake-buildsystem
+[submodule "python"]
+	path = python-wapm
+	url = https://github.com/wapm-packages/python.git
+[submodule "cpython"]
+	path = cpython
+	url = https://github.com/tiran/cpython.git
+[submodule "wasienv"]
+	path = wasienv
+	url = https://github.com/wasienv/wasienv.git
+[submodule "emsdk"]
+	path = emsdk
+	url = https://github.com/emscripten-core/emsdk.git
+[submodule "python-wapm"]
+	path = python-wapm
+	url = ./python-wapm

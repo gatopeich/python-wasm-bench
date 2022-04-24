@@ -1,7 +1,9 @@
-venv
 .vscode
+bin
+build
+node_modules
+venv
 wapm_packages
 *.deb
 *.tar.gz
 *.tar.bz2
-node_modules
